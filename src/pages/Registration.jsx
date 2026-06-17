@@ -1,11 +1,17 @@
 import { Button, styled } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  sendEmailVerification,
+} from "firebase/auth";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import SignUP from "../assets/signupimage.png";
 import Image from "../components/Image";
+import { Bars } from "react-loader-spinner";
+import { ToastContainer, toast } from "react-toastify";
 
 const ButtonCustomize = styled(Button)({
   padding: "20px 0px",
@@ -41,6 +47,7 @@ const Registration = () => {
   let [emailError, setEmailError] = useState("");
   let [nameError, setNameError] = useState("");
   let [passwordError, setPasswordError] = useState("");
+  let [loader, setLoader] = useState(false);
 
   let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -71,30 +78,29 @@ const Registration = () => {
       setPasswordError("Give me your Password");
     }
     if (email && emailRegex.test(email) && name && password) {
-     
-
-
+      setLoader(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          console.log(userCredential.user);
+
+          sendEmailVerification(auth.currentUser).then(() => {
+            console.log(userCredential.user);
+            setLoader(false);
+            toast.success("Registration Successfully");
+          });
+
           
-         
         })
         .catch((error) => {
           const errorCode = error.code;
           console.log(errorCode);
-          
-          if(errorCode.includes("auth/weak-password")){
-            setPasswordError("Your Password is so Week");
-            
-          }if(errorCode.includes("auth/email-already-in-use")){
-             setEmailError("Email Already Use");
+          setLoader(false);
 
+          if (errorCode.includes("auth/weak-password")) {
+            setPasswordError("Your Password is so Week");
           }
-         
-         
-          
-          
+          if (errorCode.includes("auth/email-already-in-use")) {
+            setEmailError("Email Already Use");
+          }
         });
     }
   };
@@ -151,11 +157,23 @@ const Registration = () => {
               </p>
             )}
             <br />
-            <ButtonCustomize onClick={handleSignUP} variant="contained">
-              Sign up
-            </ButtonCustomize>
+            {loader ? (
+              <Bars
+                height="80"
+                width="80"
+                color="#4fa94d"
+                ariaLabel="bars-loading"
+                wrapperStyle={{ textAlign: "center" }}
+                wrapperClass=""
+                visible={true}
+              />
+            ) : (
+              <ButtonCustomize onClick={handleSignUP} variant="contained">
+                Sign up
+              </ButtonCustomize>
+            )}
             <div className="w-8/12">
-              <Link to="/login">
+              <Link to="/">
                 <p className="text-sm cursor-pointer text-center text-[#03014C] font-normal">
                   Already have an account ?{" "}
                   <span className="text-[#EA6C00]">Sign In</span>
@@ -163,6 +181,18 @@ const Registration = () => {
               </Link>
             </div>
           </div>
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </div>
       </Grid>
       <Grid size={6}>
