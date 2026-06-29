@@ -94,6 +94,7 @@ const Login = () => {
         .then((userCredential) => {
           if (userCredential.user.emailVerified) {
             // console.log(userCredential.user);
+            // localStorage.setItem()
 
             toast.success("Login Successfully");
             setLoader(false);
