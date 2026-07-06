@@ -22,7 +22,7 @@ const Sideber = () => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
-      <div className="bg-[#5F35F5] rounded-[20px] w-[82%] h-[92%] flex flex-col justify-between items-center py-10">
+      <div className="bg-[#0A2947] rounded-[20px] w-[82%] h-[92%] flex flex-col justify-between items-center py-10">
         <div className="w-20 h-20 ">
           <img className="rounded-full w-full h-full" src={Profile} alt="" />
         </div>

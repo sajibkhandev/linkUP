@@ -13,6 +13,7 @@ import {
   GoogleAuthProvider,
   sendPasswordResetEmail 
 } from "firebase/auth";
+import { getDatabase, push, ref, set } from "firebase/database";
 import { ToastContainer, toast } from "react-toastify";
 import { Bars } from "react-loader-spinner";
 
@@ -54,6 +55,7 @@ const InputCustomize = styled(TextField)({
 
 const Login = () => {
   const auth = getAuth();
+  const db = getDatabase();
 
   const navigate = useNavigate();
 
@@ -118,7 +120,12 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        console.log(result.user);
+        set(push(ref(db, "userlist/" )), {
+              username: result.user.displayName,
+              email: result.user.email,
+              profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
+            });
+        console.log(result);
         navigate("/home");
       })
       .catch((error) => {

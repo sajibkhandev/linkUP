@@ -9,7 +9,7 @@ const FriendList = () => {
     <div>
       <SearchBar />
 
-      <div className=" py-4 px-5  rounded-[20px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] bg-white">
+      <div className=" mt-3 py-4 px-5  rounded-[20px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] bg-[#243F5F]">
         <TitleList className="py-3" title="Friends" />
 
         <div className="flex overflow-y-scroll  h-[170px] flex-col gap-y-3 ">

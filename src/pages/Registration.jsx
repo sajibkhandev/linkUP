@@ -6,6 +6,7 @@ import {
   getAuth,
   sendEmailVerification,
 } from "firebase/auth";
+import { getDatabase, push, ref, set } from "firebase/database";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import SignUP from "../assets/signupimage.png";
@@ -40,6 +41,7 @@ const InputCustomize = styled(TextField)({
 
 const Registration = () => {
   const auth = getAuth();
+  const db = getDatabase();
 
   let [name, setName] = useState("");
   let [email, setEmail] = useState("");
@@ -81,14 +83,18 @@ const Registration = () => {
       setLoader(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-
           sendEmailVerification(auth.currentUser).then(() => {
-            console.log(userCredential.user);
+
+
+            set(push(ref(db, "userlist/" )), {
+              username: name,
+              email: email,
+              profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
+            });
+            // console.log(userCredential.user);
             setLoader(false);
             toast.success("Registration Successfully");
           });
-
-          
         })
         .catch((error) => {
           const errorCode = error.code;

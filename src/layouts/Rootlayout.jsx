@@ -5,7 +5,7 @@ import Sideber from '../components/Sideber'
 
 const Rootlayout = () => {
   return (
-    <div>
+    <div className="bg-[#243f5fb7]">
       
       <Grid container spacing={2}>
         <Grid size={2}>
