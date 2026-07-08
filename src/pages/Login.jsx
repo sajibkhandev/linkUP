@@ -16,6 +16,8 @@ import {
 import { getDatabase, push, ref, set } from "firebase/database";
 import { ToastContainer, toast } from "react-toastify";
 import { Bars } from "react-loader-spinner";
+import { useDispatch } from "react-redux";
+import { activeuser } from "../slices/userInfoSlice";
 
 const ButtonCustomize = styled(Button)({
   padding: "20px 0px",
@@ -57,6 +59,8 @@ const Login = () => {
   const auth = getAuth();
   const db = getDatabase();
 
+  const dispatch=useDispatch()
+
   const navigate = useNavigate();
 
   let [email, setEmail] = useState("");
@@ -97,10 +101,13 @@ const Login = () => {
           if (userCredential.user.emailVerified) {
             // console.log(userCredential.user);
             // localStorage.setItem()
-
             toast.success("Login Successfully");
             setLoader(false);
             navigate("/home");
+
+            dispatch(activeuser(userCredential.user))
+
+
           } else {
             toast.error("Please Verify Your Email");
             setLoader(false);

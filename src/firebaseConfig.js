@@ -2,14 +2,14 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCwHh2Ju1M64vxbS6pbKETKWk28Eryw-tA",
-  authDomain: "linkup-165fe.firebaseapp.com",
-  projectId: "linkup-165fe",
-  storageBucket: "linkup-165fe.firebasestorage.app",
-  messagingSenderId: "1046819978970",
-  appId: "1:1046819978970:web:b528e376b994a6cef92fe3"
+  apiKey: "AIzaSyDBMr0QUs9YQYmQAH7QI-FO0uDd2J3GjBM",
+  authDomain: "linkup-4cf97.firebaseapp.com",
+  projectId: "linkup-4cf97",
+  storageBucket: "linkup-4cf97.firebasestorage.app",
+  messagingSenderId: "1015648299998",
+  appId: "1:1015648299998:web:66c607b0aebad3fca6cb4f"
 };
 
-
 const app = initializeApp(firebaseConfig);
+
 export default firebaseConfig

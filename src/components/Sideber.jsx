@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Profile from "../assets/profile.jpg";
 import { IoLogOutOutline } from "react-icons/io5";
 import { CiSettings } from "react-icons/ci";
@@ -6,26 +6,49 @@ import { IoHomeOutline } from "react-icons/io5";
 import { LuMessageCircleMore } from "react-icons/lu";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
+import { getDatabase, ref, onValue } from "firebase/database";
+import { useSelector } from "react-redux";
 
 const Sideber = () => {
+  let [alluser, setAllUser] = useState([]);
+
+
   let location = useLocation();
   let active = location.pathname.replace("/", "");
+    const db = getDatabase();
 
 
-  
-  
+  let data=useSelector(state=>state.activeuser.value)
 
 
 
 
+  useEffect(() => {
+    const starCountRef = ref(db, "userlist/");
+    let arr = [];
+    onValue(starCountRef, (snapshot) => {
+      snapshot.forEach((item) => {
+        if(item.val().email==data.email){
+           arr.push(item.val());
+        }
+      });
+      setAllUser(arr);
+    });
+  }, []);
 
+  console.log(alluser);
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <div className="bg-[#0A2947] rounded-[20px] w-[82%] h-[92%] flex flex-col justify-between items-center py-10">
-        <div className="w-20 h-20 ">
-          <img className="rounded-full w-full h-full" src={Profile} alt="" />
+        {
+          alluser.map(item=>(
+            <div className="w-20 h-20 ">
+          <img className="rounded-full w-full h-full" src={item.profileurl} alt="" />
+          <h2 className="text-white/70 text-sm font-semibold">{item.username}</h2>
         </div>
+          ))
+        }
         <div className="">
           <ul className="flex flex-col gap-y-8 ">
             <Link to="/home">

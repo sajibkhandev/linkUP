@@ -4,23 +4,26 @@ import TitleList from "../components/TitleList";
 import SearchBar from "../components/SearchBar";
 import Profile2 from "../assets/profile2.jpg";
 import { getDatabase, ref, onValue } from "firebase/database";
+import { useSelector } from "react-redux";
 
 const UserList = () => {
   const db = getDatabase();
   let [alluser, setAllUser] = useState([]);
+
+  let data=useSelector(state=>state.activeuser.value)
 
   useEffect(() => {
     const starCountRef = ref(db, "userlist/");
     let arr = [];
     onValue(starCountRef, (snapshot) => {
       snapshot.forEach((item) => {
-        arr.push(item.val());
+        if(item.val().email!=data.email){
+          arr.push(item.val());
+        }
       });
       setAllUser(arr);
     });
   }, []);
-  console.log(alluser);
-  
 
   return (
     <div>
