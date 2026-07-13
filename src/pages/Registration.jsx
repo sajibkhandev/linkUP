@@ -84,9 +84,11 @@ const Registration = () => {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           sendEmailVerification(auth.currentUser).then(() => {
+            // console.log(userCredential.user.uid);
+            
 
 
-            set(push(ref(db, "userlist/" )), {
+            set(ref(db, "userlist/" + userCredential.user.uid), {
               username: name,
               email: email,
               profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",

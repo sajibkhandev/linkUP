@@ -17,9 +17,13 @@ const UserList = () => {
     let arr = [];
     onValue(starCountRef, (snapshot) => {
       snapshot.forEach((item) => {
-        if(item.val().email!=data.email){
+        if(item.key!=data.uid){
           arr.push(item.val());
         }
+       
+        
+        
+        
       });
       setAllUser(arr);
     });

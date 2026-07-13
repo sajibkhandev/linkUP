@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sideber from "../components/Sideber";
 import Grid from "@mui/material/Grid";
 import { CiSearch } from "react-icons/ci";
@@ -14,8 +14,29 @@ import UserList from "../layouts/UserList";
 import FriendRequestList from "../layouts/FriendRequestList";
 import MyGroupList from "../layouts/MyGroupList";
 import BlockList from "../layouts/BlockList";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  let navigate=useNavigate()
+
+  let data=useSelector(state=>state.activeuser.value)
+  // console.log(data);
+  
+
+
+  useEffect(()=>{
+    if(data==null){
+      navigate("/")
+      
+      
+
+    }
+
+  },[])
+
+
+
   return (
     <div className="py-6 pr-10">
       <Grid container spacing={2}>

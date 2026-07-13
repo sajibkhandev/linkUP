@@ -5,12 +5,13 @@ import { CiSettings } from "react-icons/ci";
 import { IoHomeOutline } from "react-icons/io5";
 import { LuMessageCircleMore } from "react-icons/lu";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useSelector } from "react-redux";
 
 const Sideber = () => {
   let [alluser, setAllUser] = useState([]);
+  let navigate=useNavigate()
 
 
   let location = useLocation();
@@ -36,7 +37,11 @@ const Sideber = () => {
     });
   }, []);
 
-  console.log(alluser);
+  let handleLogout=()=>{
+    localStorage.removeItem("userinfo")
+    navigate('/')
+   
+  }
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -97,7 +102,7 @@ const Sideber = () => {
           </ul>
         </div>
         <div>
-          <IoLogOutOutline className="text-[42px] text-white/80" />
+          <IoLogOutOutline onClick={handleLogout} className="text-[42px] text-white/80" />
         </div>
       </div>
     </div>

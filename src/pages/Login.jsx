@@ -106,6 +106,8 @@ const Login = () => {
             navigate("/home");
 
             dispatch(activeuser(userCredential.user))
+            localStorage.setItem("userinfo",JSON.stringify(userCredential.user))
+           
 
 
           } else {
