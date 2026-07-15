@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from './Image'
 
-const MakeProfile = ({mainClassName,profileImage,profileName,profileStatus,buttonText}) => {
+const MakeProfile = ({mainClassName,profileImage,profileName,profileStatus,buttonText,onclick}) => {
   return (
     <div className={`flex items-center justify-between border-b border-white/30 pb-2 ${mainClassName}`}>
         <div className="flex items-center gap-x-3">
@@ -13,7 +13,7 @@ const MakeProfile = ({mainClassName,profileImage,profileName,profileStatus,butto
            <p className="text-xs text-white/40 font-normal ">{profileStatus}</p>
          </div>
         </div>
-         <button className="text-sm text-white font-semibold rounded-md bg-[#5F35F5] px-5 py-0.5">{buttonText}</button>
+         <button onClick={onclick} className="text-sm text-white font-semibold rounded-md bg-[#5F35F5] px-5 py-0.5">{buttonText}</button>
         </div>
   )
 }

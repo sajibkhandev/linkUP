@@ -5,7 +5,7 @@ import LoginImage from "../assets/loginimage.png";
 import Image from "../components/Image";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -13,7 +13,7 @@ import {
   GoogleAuthProvider,
   sendPasswordResetEmail 
 } from "firebase/auth";
-import { getDatabase, push, ref, set } from "firebase/database";
+import { getDatabase, push, ref, set,onValue } from "firebase/database";
 import { ToastContainer, toast } from "react-toastify";
 import { Bars } from "react-loader-spinner";
 import { useDispatch } from "react-redux";
@@ -71,6 +71,7 @@ const Login = () => {
   let [passwordError, setPasswordError] = useState("");
   let [loader, setLoader] = useState(false);
   let [show, setShow] = useState(false);
+   let [alluser, setAllUser] = useState([]);
 
   let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -97,16 +98,15 @@ const Login = () => {
       // firebase code
       setLoader(true);
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          if (userCredential.user.emailVerified) {
-            // console.log(userCredential.user);
-            // localStorage.setItem()
+        .then((firebaseResult) => {
+          if (firebaseResult.user.emailVerified) {
+       
             toast.success("Login Successfully");
             setLoader(false);
             navigate("/home");
 
-            dispatch(activeuser(userCredential.user))
-            localStorage.setItem("userinfo",JSON.stringify(userCredential.user))
+            dispatch(activeuser(firebaseResult.user))
+            localStorage.setItem("userinfo",JSON.stringify(firebaseResult.user))
            
 
 
@@ -125,16 +125,35 @@ const Login = () => {
     }
   };
 
+   useEffect(() => {
+      const starCountRef = ref(db, "userlist/");
+      let arr = [];
+      onValue(starCountRef, (snapshot) => {
+        snapshot.forEach((item) => {
+          
+            arr.push(item.val());
+          
+        });
+        setAllUser(arr);
+      });
+    }, []);
+
   let handleGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
-      .then((result) => {
-        set(push(ref(db, "userlist/" )), {
-              username: result.user.displayName,
-              email: result.user.email,
+      .then((firebaseResult) => {
+        alluser.map(item=>{
+          if(item.email!=firebaseResult.user.email){
+            set(ref(db, "userlist/" + firebaseResult.user.uid ), {
+              username: firebaseResult.user.displayName,
+              email: firebaseResult.user.email,
               profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
+            }).then(()=>{
+               dispatch(activeuser(firebaseResult.user))
+               localStorage.setItem("userinfo",JSON.stringify(firebaseResult.user))
             });
-        console.log(result);
+          }
+        })
         navigate("/home");
       })
       .catch((error) => {

@@ -82,18 +82,18 @@ const Registration = () => {
     if (email && emailRegex.test(email) && name && password) {
       setLoader(true);
       createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then((firebaseResult) => {
           sendEmailVerification(auth.currentUser).then(() => {
             // console.log(userCredential.user.uid);
             
 
 
-            set(ref(db, "userlist/" + userCredential.user.uid), {
+            set(ref(db, "userlist/" + firebaseResult.user.uid), {
               username: name,
               email: email,
               profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
             });
-            // console.log(userCredential.user);
+            // console.log(firebaseResult.user);
             setLoader(false);
             toast.success("Registration Successfully");
           });
