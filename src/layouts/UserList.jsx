@@ -3,21 +3,23 @@ import MakeProfile from "../components/MakeProfile";
 import TitleList from "../components/TitleList";
 import SearchBar from "../components/SearchBar";
 import Profile2 from "../assets/profile2.jpg";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { useSelector } from "react-redux";
 
 const UserList = () => {
   const db = getDatabase();
   let [alluser, setAllUser] = useState([]);
+    let [concatFriendRequest, setConcatFriendRequest] = useState([]);
+
 
   let data = useSelector((state) => state.activeuser.value);
  
   
 
   useEffect(() => {
-    const starCountRef = ref(db, "userlist/");
+    const userRef = ref(db, "userlist/");
     let arr = [];
-    onValue(starCountRef, (snapshot) => {
+    onValue(userRef, (snapshot) => {
       snapshot.forEach((item) => {
         if (item.key != data.uid) {
           arr.push({...item.val(),id:item.key});
@@ -28,15 +30,55 @@ const UserList = () => {
   }, []);
 
   let handleAddFriend = (item) => {
-    // console.log(item);
+    console.log(item);
 
-    set(ref(db, "frientrequestlist/" ), {
+    set(push(ref(db, "frientrequestlist/" )), {
       sendername: data.displayName,
       senderid: data.uid,
       receivername: item.username,
       receiverid:item.id
     });
   };
+
+  
+  
+
+
+
+
+
+   useEffect(() => {
+      const friendRequestRef = ref(db, "frientrequestlist/");
+      let arr = [];
+      onValue(friendRequestRef, (snapshot) => {
+        snapshot.forEach((item) => {
+            arr.push(item.val().receiverid + item.val().senderid);
+            
+      
+        });
+        setConcatFriendRequest(arr);
+      });
+    }, []);
+
+
+   
+
+
+
+
+
+ 
+
+  
+
+ 
+
+ 
+
+
+
+
+
 
   return (
     <div>
@@ -47,14 +89,39 @@ const UserList = () => {
 
         <div className="flex overflow-y-scroll  h-[170px] flex-col gap-y-3 ">
           {alluser.map((item) => (
-            <MakeProfile
+            concatFriendRequest.includes(item.id +data.uid) ||
+             concatFriendRequest.includes(data.uid +item.id)
+            
+
+             ?
+              <MakeProfile
               mainClassName=""
               profileImage={item.profileurl}
               profileName={item.username}
               profileStatus={`Follow me`}
-              buttonText={`Join`}
+              buttonText={`cancel`}
               onclick={() => handleAddFriend(item)}
             />
+             :
+             <MakeProfile
+              mainClassName=""
+              profileImage={item.profileurl}
+              profileName={item.username}
+              profileStatus={`Follow me`}
+              buttonText={`join`}
+              onclick={() => handleAddFriend(item)}
+            />
+
+
+            
+            
+
+          
+           
+            
+            
+           
+            
           ))}
         </div>
       </div>
