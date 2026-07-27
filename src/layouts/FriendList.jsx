@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MakeProfile from "../components/MakeProfile";
 import SearchBar from "../components/SearchBar";
 import TitleList from "../components/TitleList";
 import Profile2 from "../assets/profile2.jpg";
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
 
 const FriendList = () => {
+   const db = getDatabase();
+   let [alluser, setAllUser] = useState([]);
+
+
+   useEffect(() => {
+    const userRef = ref(db, "friends/");
+    let arr = [];
+    onValue(userRef, (snapshot) => {
+      snapshot.forEach((item) => {
+        
+          arr.push({...item.val()});
+      
+      });
+      setAllUser(arr);
+    });
+  }, []);
+
+  console.log(alluser);
+  
   return (
     <div>
       <SearchBar />
@@ -13,69 +33,18 @@ const FriendList = () => {
         <TitleList className="py-3" title="Friends" />
 
         <div className="flex overflow-y-scroll  h-[170px] flex-col gap-y-3 ">
-          <MakeProfile
+          
+          {
+            alluser.map(item=>(
+              <MakeProfile
             mainClassName=""
             profileImage={Profile2}
-            profileName={`Naymer Jr`}
+            profileName={item.sendername}
             profileStatus={`Follow me`}
-            buttonText={`Join`}
+            buttonText={`block`}
           />
-          <MakeProfile
-            mainClassName=""
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName=""
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName=""
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName="border-transparent"
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName="border-transparent"
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName="border-transparent"
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName="border-transparent"
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
-          <MakeProfile
-            mainClassName="border-transparent"
-            profileImage={Profile2}
-            profileName={`Naymer Jr`}
-            profileStatus={`Follow me`}
-            buttonText={`Join`}
-          />
+            ))
+          }
         </div>
       </div>
     </div>

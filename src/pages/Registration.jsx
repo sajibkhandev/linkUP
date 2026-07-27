@@ -4,15 +4,17 @@ import TextField from "@mui/material/TextField";
 import {
   createUserWithEmailAndPassword,
   getAuth,
-  sendEmailVerification,
+  sendEmailVerification,updateProfile
 } from "firebase/auth";
-import { getDatabase, push, ref, set } from "firebase/database";
+import { getDatabase, push, ref, set,  } from "firebase/database";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import SignUP from "../assets/signupimage.png";
 import Image from "../components/Image";
 import { Bars } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { activeuser } from "../slices/userInfoSlice";
 
 const ButtonCustomize = styled(Button)({
   padding: "20px 0px",
@@ -42,6 +44,7 @@ const InputCustomize = styled(TextField)({
 const Registration = () => {
   const auth = getAuth();
   const db = getDatabase();
+    const dispatch=useDispatch()
 
   let [name, setName] = useState("");
   let [email, setEmail] = useState("");
@@ -83,20 +86,25 @@ const Registration = () => {
       setLoader(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then((firebaseResult) => {
-          sendEmailVerification(auth.currentUser).then(() => {
-            // console.log(userCredential.user.uid);
-            
+          updateProfile(auth.currentUser, {
+            displayName: name,
+            photoURL: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
+          })
+            .then(() => {
+              sendEmailVerification(auth.currentUser).then(() => {
+                set(ref(db, "userlist/" + firebaseResult.user.uid), {
+                  username: name,
+                  email: email,
+                  profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
+                });
+                  dispatch(activeuser(firebaseResult.user))
+                   localStorage.setItem("userinfo",JSON.stringify(firebaseResult.user))
 
-
-            set(ref(db, "userlist/" + firebaseResult.user.uid), {
-              username: name,
-              email: email,
-              profileurl: "https://i.ibb.co.com/s9DhwbXD/avater.webp",
-            });
-            // console.log(firebaseResult.user);
-            setLoader(false);
-            toast.success("Registration Successfully");
-          });
+                setLoader(false);
+                toast.success("Registration Successfully");
+              });
+            })
+            .catch((error) => {});
         })
         .catch((error) => {
           const errorCode = error.code;

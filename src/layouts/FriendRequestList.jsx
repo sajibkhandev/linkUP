@@ -3,7 +3,7 @@ import MakeProfile from "../components/MakeProfile";
 import TitleList from "../components/TitleList";
 import SearchBar from "../components/SearchBar";
 import Profile2 from "../assets/profile2.jpg";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { getDatabase, ref, onValue, set, push, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 
 const FriendRequestList = () => {
@@ -19,7 +19,7 @@ const FriendRequestList = () => {
       snapshot.forEach((item) => {
         if(data.uid==item.val().receiverid){
 
-          arr.push({ ...item.val() });
+          arr.push({ ...item.val(),id:item.key});
         }
        
         
@@ -27,6 +27,16 @@ const FriendRequestList = () => {
       setFriendRequest(arr);
     });
   }, []);
+
+  let handleAccept=(item)=>{
+    // console.log(item.id);
+      set(push(ref(db, "friends/" )), {
+        ...item
+        }).then(()=>{
+          remove(ref(db, "frientrequestlist/" +item.id))
+        });
+    
+  }
 
   
 
@@ -44,10 +54,11 @@ const FriendRequestList = () => {
 
               <MakeProfile
                 mainClassName=""
-                profileImage={Profile2}
+                profileImage={item.senderprofile}
                 profileName={item.sendername}
                 profileStatus={`Follow me`}
-                buttonText={`Join`}
+                buttonText={`Accept`}
+                onclick={() => handleAccept(item)}
               />
             ))
           }

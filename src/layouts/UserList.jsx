@@ -30,16 +30,20 @@ const UserList = () => {
   }, []);
 
   let handleAddFriend = (item) => {
-    console.log(item);
+    // console.log(item.profileurl);
+    // console.log(data.photoURL);
 
     set(push(ref(db, "frientrequestlist/" )), {
       sendername: data.displayName,
       senderid: data.uid,
+      senderprofile: data.photoURL,
       receivername: item.username,
-      receiverid:item.id
+      receiverid:item.id,
+      receiverprofile:item.profileurl
     });
   };
 
+  
   
   
 
