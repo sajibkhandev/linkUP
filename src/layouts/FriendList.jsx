@@ -4,10 +4,13 @@ import SearchBar from "../components/SearchBar";
 import TitleList from "../components/TitleList";
 import Profile2 from "../assets/profile2.jpg";
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { useSelector } from "react-redux";
 
 const FriendList = () => {
    const db = getDatabase();
    let [alluser, setAllUser] = useState([]);
+
+   let data = useSelector((state) => state.activeuser.value);
 
 
    useEffect(() => {
@@ -15,15 +18,17 @@ const FriendList = () => {
     let arr = [];
     onValue(userRef, (snapshot) => {
       snapshot.forEach((item) => {
-        
+        if(data.uid==item.val().receiverid || data.uid==item.val().senderid){
+
           arr.push({...item.val()});
+        }
+        
       
       });
       setAllUser(arr);
     });
   }, []);
 
-  console.log(alluser);
   
   return (
     <div>
@@ -38,10 +43,11 @@ const FriendList = () => {
             alluser.map(item=>(
               <MakeProfile
             mainClassName=""
-            profileImage={Profile2}
-            profileName={item.sendername}
+            profileImage={data.uid==item.receiverid ? item.receiverprofile : item.senderprofile}
+            profileName={data.uid==item.receiverid ? item.sendername : item.receivername}
             profileStatus={`Follow me`}
             buttonText={`block`}
+            
           />
             ))
           }
