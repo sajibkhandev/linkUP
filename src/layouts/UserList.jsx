@@ -12,6 +12,7 @@ const UserList = () => {
   let [alluser, setAllUser] = useState([]);
   let [concatFriendRequest, setConcatFriendRequest] = useState([]);
   let [concatFriend, setConcatFriend] = useState([]);
+  let [concatBlock, setConcatBlock] = useState([]);
 
   let data = useSelector((state) => state.activeuser.value);
 
@@ -67,6 +68,18 @@ const UserList = () => {
     });
   }, []);
 
+
+  useEffect(() => {
+    const friendRequestRef = ref(db, "blocks/");
+    let arr = [];
+    onValue(friendRequestRef, (snapshot) => {
+      snapshot.forEach((item) => {
+        arr.push(item.val().blockid + item.val().blockbyid);
+      });
+      setConcatBlock(arr);
+    });
+  }, []);
+
   return (
     <div>
       <Toaster />
@@ -77,6 +90,17 @@ const UserList = () => {
 
         <div className="flex overflow-y-scroll  h-[170px] flex-col gap-y-3 ">
           {alluser.map((item) =>
+            concatBlock.includes(item.id + data.uid)||
+            concatBlock.includes(data.uid + item.id)
+            ?
+             <MakeProfile
+                mainClassName=""
+                profileImage={item.profileurl}
+                profileName={item.username}
+                profileStatus={`Follow me`}
+                buttonText={`unblock`}
+              />
+            :
             concatFriend.includes(item.id + data.uid) ||
             concatFriend.includes(data.uid + item.id) ? (
               <MakeProfile
@@ -113,3 +137,9 @@ const UserList = () => {
 };
 
 export default UserList;
+
+
+
+
+
+
