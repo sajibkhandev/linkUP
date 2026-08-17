@@ -11,6 +11,7 @@ const MyGroupList = () => {
   let [mygroup, setMygroup] = useState([]);
   let [popup,setPopup]=useState(false)
   let [friend,setFriend]=useState([])
+  let [selectedGroup, setSelectedGroup] = useState("");
   useEffect(() => {
     const mygroupRef = ref(db, "mygroups/");
     let arr = [];
@@ -40,7 +41,12 @@ const MyGroupList = () => {
   }, []);
 
 
-  let handleAddMember=()=>{
+  let handleAddMember=(item)=>{
+    setPopup(true)
+    setSelectedGroup(item.groupname);
+    
+    
+
     
   }
 
@@ -66,7 +72,7 @@ const MyGroupList = () => {
                 profileName={item.groupname}
                 profileStatus={`Follow me`}
                 buttonText={`Add Member`}
-                onclick={()=>setPopup(true)}
+                onclick={()=>handleAddMember(item)}
               />
             ))
           }
@@ -84,7 +90,7 @@ const MyGroupList = () => {
         <div className='flex flex-col gap-y-3 justify-center items-center w-[500px] h-[500px] overflow-y-scroll bg-sky-300 rounded-md'>
           <MdOutlineCancel onClick={()=>setPopup(false)}  className='relative -top-[55px] left-[220px] text-white z-40 text-2xl' />
 
-          <h2 className='pb-5 text-white text-3xl font-bold'>Mern 2504 </h2>
+          <h2 className='pb-5 text-white text-3xl font-bold'>{selectedGroup} </h2>
           <p className='pb-5 text-black/50 text-xl font-semibold'>All Users </p>
 
           <div className='w-full px-15'>
